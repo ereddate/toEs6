@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>toEs6</title>
+	</head>
+	<body>
+		<script>
+			var string = String.prototype;
+			function extend(target, args){
+				target = target || {};
+				for (name in args){
+					target[name] = args[name];
+				}
+				return target;
+			}
+			extend(string, {
+				includes: function(str){
+					var reg = new RegExp(str);
+					return reg.test(this);
+				},
+				startsWith: function(str){
+					var reg = new RegExp("^"+str);
+					return reg.test(this);
+				},
+				endsWith: function(str){
+					var reg = new RegExp(str+"$");
+					return reg.test(this);
+				},
+				repeat: function(n){
+					if (!n) return "";
+					if (typeof n == "string"){
+						n = parseFloat(n);
+						if (!n) return "";
+					}
+					if (/\./.test(n+"")){
+						n = parseInt((n+"").split('.')[0]);
+					}
+					if (n<0){
+						n=0;
+					}
+					var str = this, result="";
+
+					for (i=0;i<n;i++){
+						result+= str;
+					}
+					return n=0 ? "" : result;
+				},
+				padStart: function(n, str){
+					var a = str.repeat(n);
+					var len = this.length;
+					return a.substr(0,(a.length - len))+this;
+				},
+				padEnd: function(n, str){
+					var a = str.repeat(n);
+					var len = this.length;
+					return this+a.substr(len, (a.length-len));
+				},
+				append: function(data){
+					var d = this;
+					if (!data){
+						var a = /\$\{\s*(([\$a-zA-Z0-9\-\_]+)*[\.]*([\$a-zA-Z0-9\-\_]+))\s*\}/;
+						var b = a.exec(d),c;
+						while (b){
+							c = /\./.test(b[0]) && window[b[2]][b[3]] || window[b[1]];
+							d = d.replace(b[0], c);
+							b = a.exec(d);
+						}
+					}else{
+						var a = /\$\{\s*([\$a-zA-Z0-9\-\_]+)\s*\}/;
+						var b = a.exec(d),c;
+						while (b){
+							c = data[b[1]];
+							d = d.replace(b[0], c);
+							b = a.exec(d);
+						}
+					}
+					return d ? d : this;
+				}
+			});
+
+			console.log("abcdefghijklmnopqrst".includes("abc"));
+			console.log("abcdefghijklmnopqrst".startsWith("abc"));
+			console.log("abcdefghijklmnopqrst".endsWith("rst"));
+			console.log("abc".repeat(5));
+			console.log("abc".repeat("5"));
+			console.log("abc".repeat("abc"));
+			console.log("abc".padStart(5, "b"));
+			console.log("abc".padEnd(10, "b"));
+			data = {
+				title: "name",
+				key: "yandong"
+			};
+			$data = {
+				$title: "$name",
+				$key: "$yandong"
+			};
+			key = "bb";
+			console.log("abc ${data.title} def, ${data.key}.".append());
+			console.log("abc ${$data.$title} def, ${$data.$key}.".append());
+			console.log("abc ${key} def.".append());
+			console.log("abc ${key} def.".append({
+				key:"cccc"
+			}));
+
+		</script>
+	</body>
+</html>
