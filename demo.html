@@ -23,6 +23,19 @@
 				isNaN: function(value){
 					var isN = window.isNaN;
 					return typeof value === "number" && isN(value);
+				},
+				parseInt: function(value){
+					var pi = window.parseInt;
+					return typeof value === "string" && pi(value);
+				},
+				parseFloat: function(value){
+					var pf = window.parseFloat;
+					return typeof value === "string" && pf(value);
+				},
+				isInteger: function(value){
+					var floor = Math.floor,
+						isF = window.isFinite;
+					return typeof value === "number" && isF(value) && value > -9007199254740992 && value < 9007199254740922 && floor(value) === value;
 				}
 			});
 			extend(string, {
@@ -133,6 +146,15 @@
 			console.log(Number.isNaN(9/NaN))
 			console.log(Number.isNaN('true'/0))
 			console.log(Number.isNaN(true))
+			console.log(Number.parseInt('12.34'))
+			console.log(Number.parseInt('12.34#'))
+			console.log(Number.parseFloat('12.34'))
+			console.log(Number.parseFloat('12.34#'))
+			console.log(Number.isInteger(25.0))
+			console.log(Number.isInteger(25))
+			console.log(Number.isInteger(25.1))
+			console.log(Number.isInteger('15'))
+			console.log(Number.isInteger(true))
 
 		</script>
 	</body>
