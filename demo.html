@@ -6,7 +6,8 @@
 	</head>
 	<body>
 		<script>
-			var string = String.prototype;
+			var string = String.prototype,
+				number = Number;
 			function extend(target, args){
 				target = target || {};
 				for (name in args){
@@ -14,6 +15,16 @@
 				}
 				return target;
 			}
+			extend(number, {
+				isFinite: function(value){
+					var isF = window.isFinite;
+					return typeof value === "number" && isF(value);
+				},
+				isNaN: function(value){
+					var isN = window.isNaN;
+					return typeof value === "number" && isN(value);
+				}
+			});
 			extend(string, {
 				includes: function(str){
 					var reg = new RegExp(str);
@@ -76,6 +87,10 @@
 						}
 					}
 					return d ? d : this;
+				},
+				tag: function(data){
+					var d = this;
+					return d.append(data).replace(/&/g,"&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 				}
 			});
 
@@ -102,6 +117,22 @@
 			console.log("abc ${key} def.".append({
 				key:"cccc"
 			}));
+			console.log("abc <div>${key}&</div> def.".tag({
+				key:"cccc"
+			}));
+			
+			console.log(Number.isFinite(15))
+			console.log(Number.isFinite(NaN))
+			console.log(Number.isFinite(0.8))
+			console.log(Number.isFinite(Infinity))
+			console.log(Number.isFinite(-Infinity))
+			console.log(Number.isFinite('foo'))
+			console.log(Number.isNaN(NaN))
+			console.log(Number.isNaN(15))
+			console.log(Number.isNaN('15'))
+			console.log(Number.isNaN(9/NaN))
+			console.log(Number.isNaN('true'/0))
+			console.log(Number.isNaN(true))
 
 		</script>
 	</body>
